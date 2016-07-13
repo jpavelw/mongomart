@@ -23,7 +23,6 @@ var express = require('express'),
     ItemDAO = require('./items').ItemDAO,
     CartDAO = require('./cart').CartDAO;
 
-
 // Set up express
 app = express();
 app.set('view engine', 'html');
@@ -31,12 +30,6 @@ app.set('views', __dirname + '/views');
 app.use('/static', express.static(__dirname + '/static'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-/*
- Configure nunjucks to work with express
- Not using consolidate because I'm waiting on better support for template inheritance with
- nunjucks via consolidate. See: https://github.com/tj/consolidate.js/pull/224
-*/
 var env = nunjucks.configure('views', {
     autoescape: true,
     express: app
@@ -48,7 +41,6 @@ env.addFilter("date", nunjucksDate);
 
 var ITEMS_PER_PAGE = 5;
 
-// Hardcoded USERID for use with the shopping cart portion
 var USERID = "558098a65133816958968d88";
 
 MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
@@ -154,7 +146,6 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
 
             items.getRelatedItems(function(relatedItems) {
 
-                //console.log(relatedItems);
                 res.render("item",
                            {
                                userId: USERID,
@@ -182,14 +173,6 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
         });
     });
 
-
-    /*
-     *
-     * Since we are not maintaining user sessions in this application, any interactions with
-     * the cart will be based on a single cart associated with the the USERID constant we have
-     * defined above.
-     *
-     */
     router.get("/cart", function(req, res) {
         res.redirect("/user/" + USERID + "/cart");
     });
